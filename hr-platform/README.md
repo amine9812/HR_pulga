@@ -8,7 +8,7 @@ HR and administrative management web application for a school project. It manage
 
 | Couche | Technologie |
 | --- | --- |
-| Backend | Java 17, Spring Boot 3.2.5 |
+| Backend | Java 21, Spring Boot 3.2.5 |
 | Web MVC | Spring MVC, Thymeleaf |
 | UI | Bootstrap 5.3 CDN, Bootstrap Icons, CSS custom |
 | Securite | Spring Security, BCrypt |
