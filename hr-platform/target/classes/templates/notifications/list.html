@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('Notifications', ~{::section})}">
+<body>
+<section>
+    <div class="panel">
+        <div class="panel-header">
+            <div>
+                <h3>Centre de notifications</h3>
+                <p class="mb-0">Consultez les alertes liees a vos demandes et actions RH.</p>
+            </div>
+            <form th:action="@{/notifications/lire-toutes}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-check2-all me-2"></i>Tout marquer comme lu
+                </button>
+            </form>
+        </div>
+
+        <div class="list-group notification-list">
+            <div th:each="notification : ${notifications}"
+                 th:class="${notification.lue ? 'list-group-item notification-item' : 'list-group-item notification-item unread'}">
+                <div class="d-flex gap-3">
+                    <div class="notification-icon">
+                        <i class="bi" th:classappend="${notification.lue ? ' bi-bell' : ' bi-bell-fill'}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-wrap justify-content-between gap-2">
+                            <a th:href="${notification.lien ?: '#'}" class="fw-bold text-dark" th:text="${notification.message}">Message</a>
+                            <span class="text-muted small" th:text="${notification.dateEnvoi ?: '-'}">-</span>
+                        </div>
+                        <div class="mt-2">
+                            <span th:if="${notification.lue}" class="badge text-bg-light">Lue</span>
+                            <span th:unless="${notification.lue}" class="badge text-bg-danger">Non lue</span>
+                        </div>
+                    </div>
+                    <form th:if="${!notification.lue}" th:action="@{/notifications/{id}/lire(id=${notification.id})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button class="btn btn-sm btn-outline-primary btn-compact" type="submit" title="Marquer comme lue">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(notifications)}" class="empty-state">Aucune notification.</div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

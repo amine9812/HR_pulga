@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('Fiche employe', ~{::section})}">
+<body>
+<section>
+    <form th:action="@{/employes/sauvegarder}" th:object="${employe}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-panel">
+            <div class="panel-header">
+                <div>
+                    <h3 th:text="${employe.id == null ? 'Nouvel employe' : 'Modifier employe'}">Employe</h3>
+                    <p class="mb-0">Renseignez les informations personnelles et professionnelles.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/employes}" class="btn btn-light">Annuler</a>
+                    <button type="submit" class="btn btn-accent">
+                        <i class="bi bi-save me-2"></i>Enregistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <h4 class="form-section-title mb-3">Informations personnelles</h4>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Matricule</label>
+                    <input type="text" class="form-control" th:field="*{matricule}" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('matricule')}" th:errors="*{matricule}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-control" th:field="*{nom}" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Prenom</label>
+                    <input type="text" class="form-control" th:field="*{prenom}" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Telephone</label>
+                    <input type="text" class="form-control" th:field="*{telephone}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date de naissance</label>
+                    <input type="date" class="form-control" th:field="*{dateNaissance}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Adresse</label>
+                    <textarea class="form-control" rows="2" th:field="*{adresse}"></textarea>
+                </div>
+                <div class="col-md-6 file-field">
+                    <label class="form-label">Photo</label>
+                    <input type="file" class="form-control" name="photoFile" accept="image/*">
+                    <div class="form-text selected-file">Aucun fichier selectionne</div>
+                </div>
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" th:field="*{actif}">
+                        <label class="form-check-label">Employe actif</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <h4 class="form-section-title mb-3">Informations professionnelles</h4>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Date d'embauche</label>
+                    <input type="date" class="form-control" th:field="*{dateEmbauche}" required>
+                    <div class="text-danger small" th:if="${#fields.hasErrors('dateEmbauche')}" th:errors="*{dateEmbauche}"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Departement</label>
+                    <select class="form-select" th:field="*{departement.id}">
+                        <option value="">Selectionner</option>
+                        <option th:each="departement : ${departements}" th:value="${departement.id}" th:text="${departement.libelle}">Departement</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Service</label>
+                    <select class="form-select" th:field="*{service.id}">
+                        <option value="">Selectionner</option>
+                        <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.libelle}">Service</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Poste</label>
+                    <select class="form-select" th:field="*{poste.id}">
+                        <option value="">Selectionner</option>
+                        <option th:each="poste : ${postes}" th:value="${poste.id}" th:text="${poste.libelle}">Poste</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Responsable</label>
+                    <select class="form-select" th:field="*{responsable.id}">
+                        <option value="">Aucun</option>
+                        <option th:each="responsable : ${responsables}"
+                                th:if="${employe.id == null or responsable.id != employe.id}"
+                                th:value="${responsable.id}"
+                                th:text="${responsable.nomComplet}">Responsable</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout('Departement', ~{::section})}">
+<body>
+<section>
+    <div class="form-panel">
+        <div class="panel-header">
+            <div>
+                <h3 th:text="${departement.id == null ? 'Nouveau departement' : 'Modifier departement'}">Departement</h3>
+                <p class="mb-0">Ce libelle sera disponible dans les fiches employes et services.</p>
+            </div>
+        </div>
+        <form th:action="@{/departements/sauvegarder}" th:object="${departement}" method="post" class="row g-3">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" th:field="*{id}">
+            <div class="col-md-5">
+                <label class="form-label">Libelle</label>
+                <input type="text" class="form-control" th:field="*{libelle}" required>
+                <div class="text-danger small" th:if="${#fields.hasErrors('libelle')}" th:errors="*{libelle}"></div>
+            </div>
+            <div class="col-md-7">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-control" th:field="*{description}">
+            </div>
+            <div class="col-12 d-flex justify-content-end gap-2">
+                <a th:href="@{/departements}" class="btn btn-light">Annuler</a>
+                <button type="submit" class="btn btn-accent">
+                    <i class="bi bi-save me-2"></i>Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

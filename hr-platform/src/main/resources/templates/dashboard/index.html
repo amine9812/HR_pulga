@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/base :: layout('Command Center RH', ~{::section})}">
+<body>
+<section class="command-dashboard">
+    <div class="command-hero">
+        <div class="hero-copy">
+            <div class="crumb-line">
+                <i class="bi bi-house-door"></i>
+                <span>Workspaces</span>
+                <i class="bi bi-chevron-right"></i>
+                <span>Ressources Humaines</span>
+            </div>
+            <h2 th:text="${'Bonjour, ' + (utilisateurConnecte != null and utilisateurConnecte.employe != null ? utilisateurConnecte.employe.prenom : 'Utilisateur')}">Bonjour</h2>
+            <p>Centre de pilotage pour les employes, conges, demandes administratives, documents et notifications.</p>
+            <div class="hero-actions">
+                <a th:href="@{/employes}" class="btn btn-soft-pill" sec:authorize="!hasRole('EMPLOYE')">
+                    <i class="bi bi-person-plus"></i><span>Employes</span>
+                </a>
+                <a th:href="@{/conges}" class="btn btn-soft-pill">
+                    <i class="bi bi-calendar-check"></i><span>Conges</span>
+                </a>
+                <a th:href="@{/documents}" class="btn btn-soft-pill">
+                    <i class="bi bi-folder2-open"></i><span>Documents</span>
+                </a>
+            </div>
+        </div>
+        <div class="score-card">
+            <div class="score-card-top">
+                <span>Score RH</span>
+                <span class="score-trend"><i class="bi bi-caret-up-fill"></i> Stable</span>
+            </div>
+            <div class="score-meter" th:style="${'--score:' + scoreRh}">
+                <div class="meter-arc"></div>
+                <div class="meter-value">
+                    <strong th:text="${scoreRh}">88</strong>
+                    <span>/100</span>
+                </div>
+            </div>
+            <a th:href="@{/notifications}" class="btn btn-dark rounded-pill w-100">Ouvrir les alertes</a>
+        </div>
+    </div>
+
+    <div class="command-grid">
+        <article class="metric-tile tile-lime">
+            <div class="tile-icon"><i class="bi bi-people"></i></div>
+            <span>Total employes</span>
+            <strong th:text="${totalEmployesActifs}">0</strong>
+            <small>Actifs dans l'organisation</small>
+        </article>
+        <article class="metric-tile tile-yellow">
+            <div class="tile-icon"><i class="bi bi-calendar2-week"></i></div>
+            <span>Conges en attente</span>
+            <strong th:text="${congesEnAttente}">0</strong>
+            <small>Validation manager ou RH</small>
+        </article>
+        <article class="metric-tile tile-coral">
+            <div class="tile-icon"><i class="bi bi-file-earmark-text"></i></div>
+            <span>Demandes admin</span>
+            <strong th:text="${demandesAdminEnAttente}">0</strong>
+            <small>A traiter par l'equipe RH</small>
+        </article>
+        <article class="metric-tile tile-blue">
+            <div class="tile-icon"><i class="bi bi-bell"></i></div>
+            <span>Notifications</span>
+            <strong th:text="${notificationsDashboard}">0</strong>
+            <small>Non lues</small>
+        </article>
+    </div>
+
+    <div class="row g-3 align-items-stretch">
+        <div class="col-12 col-xl-8">
+            <div class="glass-panel workforce-panel h-100">
+                <div class="panel-header command-header">
+                    <div>
+                        <span class="eyebrow">Workforce analytics</span>
+                        <h3>Activite RH du mois</h3>
+                    </div>
+                    <div class="mini-actions">
+                        <a th:href="@{/conges}" class="mini-icon" title="Conges"><i class="bi bi-calendar-event"></i></a>
+                        <a th:href="@{/demandes}" class="mini-icon" title="Demandes"><i class="bi bi-inboxes"></i></a>
+                        <a th:href="@{/documents}" class="mini-icon" title="Documents"><i class="bi bi-cloud-arrow-up"></i></a>
+                    </div>
+                </div>
+                <div class="analytics-layout">
+                    <div class="analytics-main">
+                        <div class="big-number">
+                            <strong th:text="${tauxTraitement + '%'}">100%</strong>
+                            <span>Taux de traitement</span>
+                        </div>
+                        <div class="spark-bars" aria-hidden="true">
+                            <span style="height: 36%"></span><span style="height: 52%"></span><span style="height: 42%"></span>
+                            <span style="height: 74%"></span><span style="height: 66%"></span><span style="height: 90%"></span>
+                            <span style="height: 58%"></span><span style="height: 76%"></span><span style="height: 46%"></span>
+                            <span style="height: 86%"></span><span style="height: 62%"></span><span style="height: 70%"></span>
+                        </div>
+                    </div>
+                    <div class="analytics-side">
+                        <div class="stat-strip">
+                            <span>Conges valides</span>
+                            <strong th:text="${congesValides}">0</strong>
+                        </div>
+                        <div class="stat-strip accent-strip">
+                            <span>Demandes traitees</span>
+                            <strong th:text="${demandesTraitees}">0</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-track">
+                    <div class="flow-step done"><i class="bi bi-check-lg"></i><span>Profil employe</span></div>
+                    <div class="flow-step active"><i class="bi bi-hourglass-split"></i><span>Demandes ouvertes</span></div>
+                    <div class="flow-step"><i class="bi bi-file-earmark-arrow-up"></i><span>Documents</span></div>
+                    <div class="flow-step"><i class="bi bi-bell"></i><span>Notifications</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4">
+            <div class="glass-panel assistant-panel h-100">
+                <div class="panel-header command-header">
+                    <div>
+                        <span class="eyebrow">Assistant RH</span>
+                        <h3>Actions rapides</h3>
+                    </div>
+                    <span class="pulse-dot"></span>
+                </div>
+                <div class="assistant-prompts">
+                    <a th:href="@{/conges}" class="prompt-chip">Qui attend une validation ? <i class="bi bi-arrow-right"></i></a>
+                    <a th:href="@{/demandes}" class="prompt-chip">Quelles demandes RH prioriser ? <i class="bi bi-arrow-right"></i></a>
+                    <a th:href="@{/documents}" class="prompt-chip">Verifier les documents manquants <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="assistant-search">
+                    <i class="bi bi-stars"></i>
+                    <span>Rechercher un employe, une demande ou un document...</span>
+                    <a th:href="@{/employes}" class="mini-icon"><i class="bi bi-grid-3x3-gap"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-12 col-xxl-4">
+            <div class="glass-panel h-100">
+                <div class="panel-header command-header">
+                    <div>
+                        <span class="eyebrow">Equipe</span>
+                        <h3>Employes actifs</h3>
+                    </div>
+                    <a th:href="@{/employes}" class="btn btn-sm btn-light rounded-pill">Voir tout</a>
+                </div>
+                <div class="employee-stack">
+                    <a th:each="employe : ${employesPreview}"
+                       th:href="@{/employes/{id}(id=${employe.id})}"
+                       class="employee-row">
+                        <img th:src="${'https://api.dicebear.com/9.x/personas/png?seed=' + employe.matricule}"
+                             th:alt="${employe.nomComplet}">
+                        <span>
+                            <strong th:text="${employe.nomComplet}">Employe</strong>
+                            <small th:text="${employe.poste != null ? employe.poste.libelle : 'Poste a completer'}">Poste</small>
+                        </span>
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                    <div th:if="${#lists.isEmpty(employesPreview)}" class="empty-state">Aucun employe actif.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xxl-4">
+            <div class="glass-panel h-100">
+                <div class="panel-header command-header">
+                    <div>
+                        <span class="eyebrow">Conges</span>
+                        <h3>Dernieres demandes</h3>
+                    </div>
+                    <a th:href="@{/conges}" class="btn btn-sm btn-light rounded-pill">Ouvrir</a>
+                </div>
+                <div class="request-list">
+                    <div th:each="demande : ${recentConges}" class="request-item">
+                        <div>
+                            <strong th:text="${demande.employe != null ? demande.employe.nomComplet : '-'}">Employe</strong>
+                            <small th:text="${demande.type + ' - ' + demande.dateDebut + ' au ' + demande.dateFin}">Type</small>
+                        </div>
+                        <span th:class="${'status-badge status-' + demande.statut}" th:text="${demande.statut}">EN_ATTENTE</span>
+                    </div>
+                    <div th:if="${#lists.isEmpty(recentConges)}" class="empty-state">Aucune demande recente.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xxl-4">
+            <div class="glass-panel h-100">
+                <div class="panel-header command-header">
+                    <div>
+                        <span class="eyebrow">Administration</span>
+                        <h3>Files RH</h3>
+                    </div>
+                    <a th:href="@{/demandes}" class="btn btn-sm btn-light rounded-pill">Ouvrir</a>
+                </div>
+                <div class="request-list">
+                    <div th:each="demande : ${recentDemandesAdmin}" class="request-item">
+                        <div>
+                            <strong th:text="${demande.typeDemande}">Attestation</strong>
+                            <small th:text="${demande.employe != null ? demande.employe.nomComplet : '-'}">Employe</small>
+                        </div>
+                        <span th:class="${'status-badge status-' + demande.statut}" th:text="${demande.statut}">EN_ATTENTE</span>
+                    </div>
+                    <div th:if="${#lists.isEmpty(recentDemandesAdmin)}" class="empty-state">Aucune demande recente.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-dock">
+        <a th:href="@{/employes}" class="feature-card" sec:authorize="!hasRole('EMPLOYE')">
+            <i class="bi bi-person-vcard"></i>
+            <strong>Dossiers employes</strong>
+            <span>Profil, poste, departement, responsable</span>
+        </a>
+        <a th:href="@{/departements}" class="feature-card" sec:authorize="hasAnyRole('ADMIN','RESPONSABLE_RH')">
+            <i class="bi bi-diagram-3"></i>
+            <strong>Organisation</strong>
+            <span>Departements, services, postes</span>
+        </a>
+        <a th:href="@{/documents}" class="feature-card">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <strong>Documents</strong>
+            <span>Upload, telechargement, categories</span>
+        </a>
+        <a th:href="@{/notifications}" class="feature-card">
+            <i class="bi bi-bell"></i>
+            <strong>Alertes</strong>
+            <span>Notifications et suivi en temps reel</span>
+        </a>
+    </div>
+</section>
+</body>
+</html>

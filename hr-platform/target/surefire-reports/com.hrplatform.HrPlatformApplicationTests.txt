@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.hrplatform.HrPlatformApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.303 s -- in com.hrplatform.HrPlatformApplicationTests
