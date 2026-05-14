@@ -19,7 +19,7 @@ HR and administrative management web application for a school project. It manage
 
 ## Prerequis
 
-- Java 17 ou plus recent avec compilation cible Java 17.
+- Java 21 ou plus recent avec compilation cible Java 21.
 - Maven disponible via la commande `mvn`.
 - PostgreSQL accessible en local.
 - Une base de donnees nommee `hr_platform`.
